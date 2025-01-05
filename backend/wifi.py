@@ -72,11 +72,13 @@ class WiFi:
         self.channel = f"{channel_number} ({channel_band}, {channel_width})"
 
     def set_security_into(self, interface):
+        # TODO: Check on Other Networks
         security_map = {
-            1: "None (Open network)",
-            2: "WEP",
-            3: "WPA",
-            4: "WPA2",
+            0: "None (Open network)",
+            1: "WEP",
+            2: "WPA Personal",
+            3: "WPA Personal Mixed",
+            4: "WPA2 Personal",
             5: "WPA3",
             6: "WPA2 Enterprise",
             7: "WPA3 Enterprise"

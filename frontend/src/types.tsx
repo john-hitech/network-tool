@@ -1,5 +1,6 @@
 export type NetworkData = {
-  ip_address: string;
+  ip_address: string | null;
+  router: string | null;
   noise: number;
   physical_mode: string;
   rssi: number;
@@ -7,4 +8,5 @@ export type NetworkData = {
   snr: number;
   time: string;
   tx_rate: number;
+  channel: string;
 };
