@@ -6,7 +6,7 @@ export default function WiFiMenu() {
     <>
       <Box
         sx={{
-          backgroundColor: "#000407",
+          backgroundColor: "#f2f0f3",
           width: "100vw",
           display: "flex",
           flexDirection: "row",
@@ -16,8 +16,22 @@ export default function WiFiMenu() {
           padding: "10px 0px 10px 0px",
         }}
       >
-        <img src={hitechLogo} alt="Hi! Tech Logo" className="hitechLogo" />
-        <Typography variant="h4" sx={{ color: "#f2f0f3" }}>
+        <img
+          src={hitechLogo}
+          alt="Hi! Tech Logo"
+          className="hitechLogo"
+          style={{ filter: "invert(1)" }}
+        />
+        <Typography
+          variant="h6"
+          sx={{
+            backgroundColor: "#FDDA25",
+            color: "#000",
+            padding: "7px 20px 7px 20px",
+            borderRadius: "20px",
+            border: "2px solid #000",
+          }}
+        >
           WiFi Analysis
         </Typography>
       </Box>

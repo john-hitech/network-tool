@@ -30,14 +30,14 @@ export default function WiFiControls({
           marginTop: "5px",
         }}
       >
-        <IconButton onClick={startStopData}>
+        <IconButton onClick={startStopData} sx={{ color: "white" }}>
           {isRunning ? (
             <PauseCircleOutlineOutlinedIcon fontSize="large" />
           ) : (
             <PlayCircleFilledWhiteOutlinedIcon fontSize="large" />
           )}
         </IconButton>
-        <IconButton onClick={resetData}>
+        <IconButton onClick={resetData} sx={{ color: "white" }}>
           <RestartAltOutlinedIcon fontSize="large" />
         </IconButton>
       </Box>

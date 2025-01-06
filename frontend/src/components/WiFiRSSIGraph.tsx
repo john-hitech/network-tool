@@ -60,14 +60,10 @@ export default function WiFiRSSIGraph({
             sx={{
               color:
                 networkData.length > 0
-                  ? networkData[networkData.length - 1].rssi > rssiLimit
+                  ? networkData[networkData.length - 1].rssi >= rssiLimit
                     ? "rgb(255, 255, 255)"
                     : "rgb(231, 60, 62)"
                   : "rgb(255, 255, 255)",
-              //   color:
-              //     networkData[networkData.length - 1].rssi > rssiLimit
-              //       ? "rgb(255, 255, 255)"
-              //       : "rgb(231, 60, 62)",
               height: "100%",
               border: "2px solid #fff",
               borderRadius: "10px",
@@ -96,7 +92,7 @@ export default function WiFiRSSIGraph({
                 color: "#fff",
               }}
             >
-              RSSI Limit:
+              RSSI Threshold:
             </FormLabel>
             <TextField
               type="number"
@@ -138,8 +134,6 @@ export default function WiFiRSSIGraph({
                 {
                   label: "RSSI",
                   data: networkData.map((data) => data.rssi),
-                  //   borderColor: "rgb(255, 0, 0)",
-                  //   backgroundColor: "rgba(255, 0, 0, 0.05)",
                   fill: "start",
                   pointRadius: 0,
                   tension: 0.2,
@@ -154,11 +148,20 @@ export default function WiFiRSSIGraph({
 
                     backgroundColor: (ctx) => {
                       const value = (ctx.p1 as any).raw;
-                      return value > rssiLimit
+                      return value >= rssiLimit
                         ? "rgba(67, 176, 42, 0.3)"
                         : "rgba(231, 60, 62, 0.3)";
                     },
                   },
+                },
+                {
+                  label: "RSSI Limit",
+                  data: networkData.map(() => rssiLimit),
+                  borderColor: "rgba(231, 60, 62, 0.5)",
+                  borderDash: [5, 5],
+                  pointRadius: 0,
+                  tension: 0.2,
+                  yAxisID: "rssi",
                 },
               ],
             }}

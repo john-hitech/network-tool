@@ -60,7 +60,7 @@ export default function WiFiTxRateGraph({
             sx={{
               color:
                 networkData.length > 0
-                  ? networkData[networkData.length - 1].tx_rate > txLimit
+                  ? networkData[networkData.length - 1].tx_rate >= txLimit
                     ? "rgb(255, 255, 255)"
                     : "rgb(231, 60, 62)"
                   : "rgb(255, 255, 255)",
@@ -92,7 +92,7 @@ export default function WiFiTxRateGraph({
                 color: "#fff",
               }}
             >
-              Tx Rate Limit:
+              Tx Rate Threshold:
             </FormLabel>
             <TextField
               type="number"
@@ -142,18 +142,27 @@ export default function WiFiTxRateGraph({
                   segment: {
                     borderColor: (ctx) => {
                       const value = (ctx.p1 as any).raw;
-                      return value > txLimit
+                      return value >= txLimit
                         ? "rgb(0, 145, 218)"
                         : "rgb(231, 60, 62)";
                     },
 
                     backgroundColor: (ctx) => {
                       const value = (ctx.p1 as any).raw;
-                      return value > txLimit
+                      return value >= txLimit
                         ? "rgba(0, 145, 218, 0.3)"
                         : "rgba(231, 60, 62, 0.3)";
                     },
                   },
+                },
+                {
+                  label: "RSSI Limit",
+                  data: networkData.map(() => txLimit),
+                  borderColor: "rgba(231, 60, 62, 0.5)",
+                  borderDash: [5, 5],
+                  pointRadius: 0,
+                  tension: 0.2,
+                  yAxisID: "tx",
                 },
               ],
             }}
