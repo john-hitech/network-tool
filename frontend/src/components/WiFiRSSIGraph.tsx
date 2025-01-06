@@ -126,7 +126,7 @@ export default function WiFiRSSIGraph({
         {/* Graph Stuff */}
         <Box
           sx={{
-            width: "95vw",
+            width: "90vw",
             height: "20vh",
           }}
         >

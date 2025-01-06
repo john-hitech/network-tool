@@ -122,7 +122,7 @@ export default function WiFiTxRateGraph({
         {/* Graph Stuff */}
         <Box
           sx={{
-            width: "95vw",
+            width: "90vw",
             height: "20vh",
           }}
         >

@@ -27,7 +27,7 @@ export default function WiFiControls({
           backgroundColor: "#000407",
           padding: "10px",
           borderRadius: "10px",
-          marginTop: "10px",
+          marginTop: "5px",
         }}
       >
         <IconButton onClick={startStopData}>

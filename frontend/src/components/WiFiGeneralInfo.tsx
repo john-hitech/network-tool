@@ -14,7 +14,7 @@ export default function WiFiGeneralInfo({
           flexDirection: "row",
           justifyContent: "space-around",
           alignItems: "center",
-          width: "95vw",
+          width: "80vw",
           marginTop: "10px",
           backgroundColor: "#000407",
           padding: "10px",

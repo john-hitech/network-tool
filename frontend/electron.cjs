@@ -7,8 +7,11 @@ let backendProcess;
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1000,
-    height: 600,
+    height: 800,
     resizable: false,
+    webPreferences: {
+      nodeIntegration: true,
+    },
   });
 
   win.loadFile(path.join(__dirname, "dist", "index.html"));

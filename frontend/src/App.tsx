@@ -6,8 +6,8 @@ import WiFiMenu from "./components/WiFiMenu";
 import WiFiGeneralInfo from "./components/WiFiGeneralInfo";
 import WiFiControls from "./components/WiFiControls";
 import WiFiRSSIGraph from "./components/WiFiRSSIGraph";
-import { Box } from "@mui/material";
 import WiFiTxRateGraph from "./components/WiFiTxRateGraph";
+import { Box } from "@mui/material";
 
 function App() {
   const [isRunning, setIsRunning] = useState(false);
