@@ -10,3 +10,10 @@ export type NetworkData = {
   tx_rate: number;
   channel: string;
 };
+
+export type PingData = {
+  ip_address: string;
+  time_ms: number | null;
+  size: number;
+  time: string;
+};

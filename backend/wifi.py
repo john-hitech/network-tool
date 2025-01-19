@@ -28,15 +28,20 @@ class WiFi:
 
     def process_raw_data(self, interface):
         default_gateway = netifaces.gateways().get("default", {})
-        self.router = default_gateway.get(netifaces.AF_INET)[0]
-        addresses = netifaces.ifaddresses(default_gateway.get(netifaces.AF_INET)[1])
-        self.ip_address = addresses.get(netifaces.AF_INET)[0].get("addr")
+        if default_gateway:
+            self.router = default_gateway.get(netifaces.AF_INET)[0]
+        interfaces = netifaces.interfaces()
+        for inter in interfaces:
+            if inter == "en0":
+                addresses = netifaces.ifaddresses(inter)
+                self.ip_address = addresses[netifaces.AF_INET][0].get("addr", "n/a")
 
         self.rssi = interface.rssiValue()
         self.noise = interface.noiseMeasurement()
         self.snr = self.rssi - self.noise
         self.tx_rate = interface.transmitRate()
         self.set_phy_mode(interface)
+        # self.security = interface.security()
         self.set_channel_info(interface)
         self.set_security_into(interface)
 
@@ -79,7 +84,7 @@ class WiFi:
             2: "WPA Personal",
             3: "WPA Personal Mixed",
             4: "WPA2 Personal",
-            5: "WPA3",
+            11: "WPA3",
             6: "WPA2 Enterprise",
             7: "WPA3 Enterprise"
         }

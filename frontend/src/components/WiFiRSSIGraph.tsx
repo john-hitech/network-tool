@@ -36,11 +36,13 @@ export default function WiFiRSSIGraph({
           backgroundColor: "#000407",
           padding: "10px",
           borderRadius: "10px",
-          marginTop: "10px",
+          // marginTop: "10px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          width: "100%",
+          height: "100%",
         }}
       >
         {/* Top Bar Stuff */}
@@ -52,6 +54,7 @@ export default function WiFiRSSIGraph({
             justifyContent: "center",
             // backgroundColor: "red",
             width: "100%",
+            height: "30%",
             gap: "10px",
           }}
         >
@@ -122,12 +125,11 @@ export default function WiFiRSSIGraph({
         {/* Graph Stuff */}
         <Box
           sx={{
-            width: "90vw",
-            height: "20vh",
+            width: "100%",
+            height: "70%",
           }}
         >
           <Line
-            className="chart"
             data={{
               labels: networkData.map((data) => data.time),
               datasets: [
