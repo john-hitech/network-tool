@@ -11,10 +11,9 @@ import {
   Filler,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { Box, FormLabel, TextField, IconButton } from "@mui/material";
+import { Box, FormLabel, TextField } from "@mui/material";
 import InfoDisplayBox from "./InfoDisplayBox";
 import { useResizeDetector } from "react-resize-detector";
-import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 
 ChartJS.register(
   CategoryScale,
@@ -28,9 +27,19 @@ ChartJS.register(
 const heightThreshold = 77;
 const widthThreshold = 494;
 
-export default function PingGraph({ isRunning }: { isRunning: boolean }) {
+export default function PingGraph({
+  resetTrigger,
+  isRunning,
+  timeFrame,
+  timeInterval,
+}: {
+  resetTrigger: boolean;
+  isRunning: boolean;
+  timeFrame: number;
+  timeInterval: number;
+}) {
   const [pingData, setPingData] = useState<PingData[]>(
-    new Array(100).fill({
+    new Array(timeFrame / timeInterval).fill({
       ip_address: "",
       time_ms: null,
       size: 0,
@@ -66,7 +75,7 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
 
     setPingData((prevArr) => {
       // Add new data to the end of the array
-      const updatedArr = [...prevArr, data].slice(-100);
+      const updatedArr = [...prevArr, data].slice(-(timeFrame / timeInterval));
 
       //   Get only valid time_ms values
       const filteredData = updatedArr
@@ -87,7 +96,6 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
       //   Calculate the loss percentage
       setLossPercentage(calculateLoss(updatedArr));
 
-      // Return the last 100 elements
       return updatedArr;
     });
   };
@@ -95,12 +103,23 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
     if (isRunning) {
       const interval = setInterval(() => {
         ping();
-      }, 500);
+      }, timeInterval * 1000);
       return () => clearInterval(interval);
     } else {
       return () => {};
     }
   }, [isRunning]);
+
+  useEffect(() => {
+    setPingData(
+      new Array(timeFrame / timeInterval).fill({
+        ip_address: "",
+        time_ms: null,
+        size: 0,
+        time: "",
+      })
+    );
+  }, [timeFrame, timeInterval, pingAddress, resetTrigger]);
 
   return (
     <>
@@ -140,8 +159,7 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
               justifyContent: "center",
               border: "2px solid #fff",
               borderRadius: "10px",
-              padding: "1px",
-              paddingLeft: "5px",
+              padding: "4px 7px 4px 7px",
             }}
             className="no-drag"
           >
@@ -153,6 +171,7 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
               Host:
             </FormLabel>
             <TextField
+              disabled={isRunning}
               value={pingAddress}
               sx={{
                 backgroundColor: "#fff",
@@ -166,9 +185,6 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
               }}
               onChange={(e) => setPingAddress(e.target.value)}
             />
-            <IconButton sx={{ color: "white", padding: 0 }}>
-              <RestartAltOutlinedIcon fontSize="large" />
-            </IconButton>
           </Box>
           {(width ?? 0) > widthThreshold ? (
             <>

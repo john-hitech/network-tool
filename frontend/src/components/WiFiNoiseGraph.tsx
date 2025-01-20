@@ -12,8 +12,8 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { NetworkData } from "../types";
-import { Box, TextField, FormLabel } from "@mui/material";
 import InfoDisplayBox from "./InfoDisplayBox";
+import { Box, TextField, FormLabel } from "@mui/material";
 import { useResizeDetector } from "react-resize-detector";
 
 ChartJS.register(
@@ -28,7 +28,7 @@ ChartJS.register(
 
 const heightThreshold = 77;
 
-export default function WiFiRSSIGraph({
+export default function WiFiNoiseGraph({
   resetTrigger,
   isRunning,
   timeFrame,
@@ -40,8 +40,8 @@ export default function WiFiRSSIGraph({
   timeInterval: number;
 }) {
   const [networkData, setNetworkData] = useState<NetworkData[]>([]);
-  const [rssiLimit, setRssiLimit] = useState<number>(-75);
-  const [currentRSSI, setCurrnetRSSI] = useState<number>(0);
+  const [noiseLimit, setNoiseLimit] = useState<number>(-80);
+  const [currentNoise, setCurrentNoise] = useState<number | null>(null);
 
   const { height, ref } = useResizeDetector();
 
@@ -54,7 +54,7 @@ export default function WiFiRSSIGraph({
     const data = response.data;
     // console.log(data);
 
-    setCurrnetRSSI(data.rssi);
+    setCurrentNoise(data.noise);
 
     setNetworkData((prevArr) => {
       const updatedArr = [...prevArr, data];
@@ -107,10 +107,16 @@ export default function WiFiRSSIGraph({
           }}
         >
           <InfoDisplayBox
-            title="RSSI"
-            data={currentRSSI}
+            title="Noise"
+            data={currentNoise}
             unit="dBm"
-            textColor={currentRSSI >= rssiLimit ? "#fff" : "rgb(231, 60, 62)"}
+            textColor={
+              !currentNoise
+                ? "#fff"
+                : currentNoise <= noiseLimit
+                ? "#fff"
+                : "rgb(231, 60, 62)"
+            }
           />
           <Box
             className="no-drag"
@@ -129,11 +135,11 @@ export default function WiFiRSSIGraph({
                 color: "#fff",
               }}
             >
-              RSSI Threshold:
+              Noise Threshold:
             </FormLabel>
             <TextField
               type="number"
-              value={rssiLimit}
+              value={noiseLimit}
               sx={{
                 backgroundColor: "#fff",
                 borderRadius: "5px",
@@ -152,7 +158,7 @@ export default function WiFiRSSIGraph({
                   },
                 },
               }}
-              onChange={(e) => setRssiLimit(Number(e.target.value))}
+              onChange={(e) => setNoiseLimit(Number(e.target.value))}
             />
           </Box>
         </Box>
@@ -169,36 +175,36 @@ export default function WiFiRSSIGraph({
                 labels: networkData.map((data) => data.time),
                 datasets: [
                   {
-                    label: "RSSI",
-                    data: networkData.map((data) => data.rssi),
-                    fill: "start",
+                    label: "Noise",
+                    data: networkData.map((data) => data.noise),
                     pointRadius: 0,
                     tension: 0.2,
-                    yAxisID: "rssi",
+                    fill: "start",
+                    yAxisID: "noise",
                     segment: {
                       borderColor: (ctx) => {
                         const value = (ctx.p1 as any).raw;
-                        return value > rssiLimit
-                          ? "rgb(67, 176, 42)"
+                        return value <= noiseLimit
+                          ? "rgb(0, 218, 153)"
                           : "rgb(231, 60, 62)";
                       },
 
                       backgroundColor: (ctx) => {
                         const value = (ctx.p1 as any).raw;
-                        return value >= rssiLimit
-                          ? "rgba(67, 176, 42, 0.3)"
+                        return value <= noiseLimit
+                          ? "rgba(0, 218, 153, 0.3)"
                           : "rgba(231, 60, 62, 0.3)";
                       },
                     },
                   },
                   {
-                    label: "RSSI Limit",
-                    data: networkData.map(() => rssiLimit),
+                    label: "Noise Limit",
+                    data: networkData.map(() => noiseLimit),
                     borderColor: "rgba(231, 60, 62, 0.5)",
                     borderDash: [5, 5],
                     pointRadius: 0,
                     tension: 0.2,
-                    yAxisID: "rssi",
+                    yAxisID: "noise",
                   },
                 ],
               }}
@@ -221,7 +227,7 @@ export default function WiFiRSSIGraph({
                   x: {
                     display: false,
                   },
-                  rssi: {
+                  noise: {
                     type: "linear",
                     position: "right",
                     min: -100,

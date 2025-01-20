@@ -5,9 +5,21 @@ import AppControls from "./AppControls";
 export default function MenuBar({
   setIsRunning,
   isRunning,
+  timeFrame,
+  setTimeFrame,
+  timeInterval,
+  setTimeInterval,
+  resetTrigger,
+  setResetTrigger,
 }: {
   setIsRunning: Function;
   isRunning: boolean;
+  timeFrame: number;
+  setTimeFrame: Function;
+  timeInterval: number;
+  setTimeInterval: Function;
+  resetTrigger: boolean;
+  setResetTrigger: Function;
 }) {
   return (
     <>
@@ -62,7 +74,16 @@ export default function MenuBar({
             alignItems: "center",
           }}
         >
-          <AppControls setIsRunning={setIsRunning} isRunning={isRunning} />
+          <AppControls
+            setIsRunning={setIsRunning}
+            isRunning={isRunning}
+            timeFrame={timeFrame}
+            setTimeFrame={setTimeFrame}
+            timeInterval={timeInterval}
+            setTimeInterval={setTimeInterval}
+            resetTrigger={resetTrigger}
+            setResetTrigger={setResetTrigger}
+          />
         </Box>
       </Box>
     </>

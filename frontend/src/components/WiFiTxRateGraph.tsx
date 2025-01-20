@@ -28,7 +28,17 @@ ChartJS.register(
 
 const heightThreshold = 77;
 
-export default function WiFiTxRateGraph({ isRunning }: { isRunning: boolean }) {
+export default function WiFiTxRateGraph({
+  resetTrigger,
+  isRunning,
+  timeFrame,
+  timeInterval,
+}: {
+  resetTrigger: boolean;
+  isRunning: boolean;
+  timeFrame: number;
+  timeInterval: number;
+}) {
   const [networkData, setNetworkData] = useState<NetworkData[]>([]);
   const [txLimit, setTxLimit] = useState<number>(100);
   const [currentTxRate, setCurrentTxRate] = useState<number | null>(null);
@@ -48,7 +58,7 @@ export default function WiFiTxRateGraph({ isRunning }: { isRunning: boolean }) {
 
     setNetworkData((prevArr) => {
       const updatedArr = [...prevArr, data];
-      return updatedArr.slice(-100);
+      return updatedArr.slice(-(timeFrame / timeInterval));
     });
   };
 
@@ -62,6 +72,10 @@ export default function WiFiTxRateGraph({ isRunning }: { isRunning: boolean }) {
       return () => {};
     }
   }, [isRunning]);
+
+  useEffect(() => {
+    setNetworkData([]);
+  }, [timeFrame, timeInterval, resetTrigger]);
 
   return (
     <>
@@ -93,9 +107,9 @@ export default function WiFiTxRateGraph({ isRunning }: { isRunning: boolean }) {
           }}
         >
           <InfoDisplayBox
-            title="RSSI"
+            title="Tx Rate"
             data={currentTxRate}
-            unit="dBm"
+            unit="mbps"
             textColor={
               !currentTxRate
                 ? "#fff"
@@ -185,7 +199,7 @@ export default function WiFiTxRateGraph({ isRunning }: { isRunning: boolean }) {
                     },
                   },
                   {
-                    label: "RSSI Limit",
+                    label: "Tx Rate Limit",
                     data: networkData.map(() => txLimit),
                     borderColor: "rgba(231, 60, 62, 0.5)",
                     borderDash: [5, 5],

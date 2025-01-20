@@ -31,7 +31,7 @@ export default function InfoDisplayBox({
             color: textColor,
           }}
         >
-          {title}:
+          {title}
         </Typography>
         <Typography
           fontSize={"14px"}
