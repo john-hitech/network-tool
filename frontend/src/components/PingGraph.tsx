@@ -11,7 +11,10 @@ import {
   Filler,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { Box, Typography, FormLabel, TextField } from "@mui/material";
+import { Box, FormLabel, TextField, IconButton } from "@mui/material";
+import InfoDisplayBox from "./InfoDisplayBox";
+import { useResizeDetector } from "react-resize-detector";
+import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 
 ChartJS.register(
   CategoryScale,
@@ -21,6 +24,9 @@ ChartJS.register(
   Legend,
   Filler
 );
+
+const heightThreshold = 77;
+const widthThreshold = 494;
 
 export default function PingGraph({ isRunning }: { isRunning: boolean }) {
   const [pingData, setPingData] = useState<PingData[]>(
@@ -36,6 +42,12 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
   const [avgPing, setAvgPing] = useState<number>(0);
   const [pingAddress, setPingAddress] = useState<string>("8.8.8.8");
   const [lossPercentage, setLossPercentage] = useState<number>(0);
+
+  const { width, height, ref } = useResizeDetector();
+
+  // useEffect(() => {
+  //   console.log(width, height);
+  // }, [width, height]);
 
   const calculateLoss = (data: PingData[]) => {
     const validData = data.filter((item) => item.ip_address);
@@ -93,6 +105,7 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
   return (
     <>
       <Box
+        ref={ref}
         sx={{
           backgroundColor: "#000407",
           padding: "10px",
@@ -114,7 +127,7 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
             justifyContent: "center",
             // backgroundColor: "red",
             width: "100%",
-            height: "30%",
+            height: (height ?? 0) > heightThreshold ? "30%" : "100%",
             gap: "10px",
           }}
         >
@@ -127,8 +140,10 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
               justifyContent: "center",
               border: "2px solid #fff",
               borderRadius: "10px",
-              padding: "5px",
+              padding: "1px",
+              paddingLeft: "5px",
             }}
+            className="no-drag"
           >
             <FormLabel
               sx={{
@@ -144,160 +159,103 @@ export default function PingGraph({ isRunning }: { isRunning: boolean }) {
                 borderRadius: "5px",
                 marginLeft: "10px",
                 height: "30px",
+                width: "150px",
                 "& .MuiInputBase-root": {
                   height: "100%",
                 },
               }}
               onChange={(e) => setPingAddress(e.target.value)}
             />
+            <IconButton sx={{ color: "white", padding: 0 }}>
+              <RestartAltOutlinedIcon fontSize="large" />
+            </IconButton>
           </Box>
-          {/* Max Ping */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px solid #fff",
-              borderRadius: "10px",
-              padding: "5px",
-            }}
-          >
-            <Typography
-              sx={{
-                color: "#fff",
-              }}
-            >
-              Max: {maxPing.toFixed(1)} ms
-            </Typography>
-          </Box>
-          {/* Min Ping */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px solid #fff",
-              borderRadius: "10px",
-              padding: "5px",
-            }}
-          >
-            <Typography
-              sx={{
-                color: "#fff",
-              }}
-            >
-              Min: {minPing.toFixed(1)} ms
-            </Typography>
-          </Box>
-          {/* Avg Ping */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px solid #fff",
-              borderRadius: "10px",
-              padding: "5px",
-            }}
-          >
-            <Typography
-              sx={{
-                color: "#fff",
-              }}
-            >
-              Avg: {avgPing.toFixed(1)} ms
-            </Typography>
-          </Box>
-          {/* Loss Percentage */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "2px solid #fff",
-              borderRadius: "10px",
-              padding: "5px",
-            }}
-          >
-            <Typography
-              sx={{
-                color: lossPercentage > 0 ? "rgb(231, 60, 62)" : "#fff",
-              }}
-            >
-              Loss: {(lossPercentage * 100).toFixed(2)}%
-            </Typography>
-          </Box>
-        </Box>
-        {/* Graph Stuff */}
-        <Box
-          sx={{
-            width: "100%",
-            height: "70%",
-            // backgroundColor: "green",
-          }}
-        >
-          <Bar
-            data={{
-              labels: pingData.map((data) => data.time),
-              datasets: [
-                {
-                  label: "Ping Time (ms)",
-                  data: pingData.map((data) =>
-                    data.time_ms === null ? 0 : data.time_ms
-                  ),
-                  backgroundColor: "rgb(99, 146, 221)",
-                  barPercentage: 1,
-                  categoryPercentage: 1,
-                  yAxisID: "ping",
-                },
-                {
-                  label: "Timeout",
-                  data: pingData.map((data) =>
-                    data.time_ms === null && data.ip_address ? maxPing : null
-                  ),
-                  backgroundColor: "rgba(231, 60, 62, 1)",
-                  barPercentage: 1,
-                  categoryPercentage: 1,
-                  yAxisID: "ping",
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              animation: {
-                duration: 0,
-              },
-              plugins: {
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  enabled: true,
-                  intersect: false,
-                },
-              },
-              scales: {
-                x: {
-                  display: false,
-                  stacked: true,
-                },
-                ping: {
-                  type: "linear",
-                  position: "right",
-                  ticks: {
-                    callback: (value) => `${value} ms`,
-                    stepSize: 5,
-                  },
-                },
-              },
-            }}
+          {(width ?? 0) > widthThreshold ? (
+            <>
+              <InfoDisplayBox title="Max" data={maxPing.toFixed(1)} unit="ms" />
+              <InfoDisplayBox title="Min" data={minPing.toFixed(1)} unit="ms" />
+              <InfoDisplayBox title="Avg" data={avgPing.toFixed(1)} unit="ms" />
+            </>
+          ) : (
+            ""
+          )}
+          <InfoDisplayBox
+            title="Loss"
+            data={(lossPercentage * 100).toFixed(2)}
+            unit="%"
+            textColor={lossPercentage > 0 ? "rgb(231, 60, 62)" : "#fff"}
           />
         </Box>
+        {/* Graph Stuff */}
+        {(height ?? 0) > heightThreshold ? (
+          <Box
+            sx={{
+              width: "100%",
+              height: "70%",
+              // backgroundColor: "green",
+            }}
+          >
+            <Bar
+              data={{
+                labels: pingData.map((data) => data.time),
+                datasets: [
+                  {
+                    label: "Ping Time (ms)",
+                    data: pingData.map((data) =>
+                      data.time_ms === null ? 0 : data.time_ms
+                    ),
+                    backgroundColor: "rgb(99, 146, 221)",
+                    barPercentage: 1,
+                    categoryPercentage: 1,
+                    yAxisID: "ping",
+                  },
+                  {
+                    label: "Timeout",
+                    data: pingData.map((data) =>
+                      data.time_ms === null && data.ip_address ? maxPing : null
+                    ),
+                    backgroundColor: "rgb(231, 60, 62)",
+                    barPercentage: 1,
+                    categoryPercentage: 1,
+                    yAxisID: "ping",
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                  duration: 0,
+                },
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  tooltip: {
+                    enabled: true,
+                    intersect: false,
+                  },
+                },
+                scales: {
+                  x: {
+                    display: false,
+                    stacked: true,
+                  },
+                  ping: {
+                    type: "linear",
+                    position: "right",
+                    ticks: {
+                      callback: (value) => `${value} ms`,
+                      stepSize: 5,
+                    },
+                  },
+                },
+              }}
+            />
+          </Box>
+        ) : (
+          ""
+        )}
       </Box>
     </>
   );

@@ -3,17 +3,16 @@ import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFil
 import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 
-export default function WiFiControls({
-  setNetworkData,
+export default function AppControls({
   setIsRunning,
   isRunning,
 }: {
-  setNetworkData: Function;
   setIsRunning: Function;
   isRunning: boolean;
 }) {
   const resetData = () => {
-    setNetworkData([]);
+    // setNetworkData([]);
+    console.log("Resetting data");
   };
 
   const startStopData = () => {
@@ -23,21 +22,23 @@ export default function WiFiControls({
   return (
     <>
       <Box
-        sx={{
-          backgroundColor: "#000407",
-          padding: "10px",
-          borderRadius: "10px",
-          marginTop: "5px",
-        }}
+        sx={
+          {
+            // backgroundColor: "#000407",
+            // padding: "10px",
+            // borderRadius: "10px",
+            // marginTop: "5px",
+          }
+        }
       >
-        <IconButton onClick={startStopData} sx={{ color: "white" }}>
+        <IconButton onClick={startStopData} sx={{ color: "#000407" }}>
           {isRunning ? (
             <PauseCircleOutlineOutlinedIcon fontSize="large" />
           ) : (
             <PlayCircleFilledWhiteOutlinedIcon fontSize="large" />
           )}
         </IconButton>
-        <IconButton onClick={resetData} sx={{ color: "white" }}>
+        <IconButton onClick={resetData} sx={{ color: "#000407" }}>
           <RestartAltOutlinedIcon fontSize="large" />
         </IconButton>
       </Box>
